@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Plus, Pencil, RefreshCw, Percent, DollarSign, Calendar, AlertCircle } from 'lucide-react'
+import { Plus, Pencil, RefreshCw, Percent, DollarSign, AlertCircle } from 'lucide-react'
 import api from '../lib/api'
 
 type AdjustmentType = {
