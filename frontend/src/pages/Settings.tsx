@@ -290,13 +290,6 @@ export default function SettingsPage() {
     }
   }
 
-  const timezoneLastUpdatedLabel = timezoneMetadata.updated_at
-    ? new Date(timezoneMetadata.updated_at).toLocaleString()
-    : 'Not set'
-
-  const currencyLastUpdatedLabel = currencyMetadata.updated_at
-    ? new Date(currencyMetadata.updated_at).toLocaleString()
-    : 'Not set'
 
   const budgetLastUpdatedLabel = budgetMetadata.updated_at
     ? new Date(budgetMetadata.updated_at).toLocaleString()
