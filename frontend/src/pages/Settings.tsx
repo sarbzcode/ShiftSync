@@ -84,14 +84,7 @@ export default function SettingsPage() {
   const [timezoneSuccess, setTimezoneSuccess] = useState('')
   const [currencySuccess, setCurrencySuccess] = useState('')
   const [currencyApiAvailable, setCurrencyApiAvailable] = useState(true)
-  const [timezoneMetadata, setTimezoneMetadata] = useState<{
-    updated_at?: string
-    updated_by_name?: string | null
-  }>({})
-  const [currencyMetadata, setCurrencyMetadata] = useState<{
-    updated_at?: string
-    updated_by_name?: string | null
-  }>({})
+ 
   const [budgetValue, setBudgetValue] = useState<number | ''>('')
   const [budgetSaving, setBudgetSaving] = useState(false)
   const [budgetLoading, setBudgetLoading] = useState(true)
@@ -134,10 +127,6 @@ export default function SettingsPage() {
         api.get<TimezoneListResponse>('/settings/timezones?limit=600'),
       ])
       setSelectedTimezone(tzResponse.data.timezone)
-      setTimezoneMetadata({
-        updated_at: tzResponse.data.updated_at,
-        updated_by_name: tzResponse.data.updated_by_name ?? null,
-      })
       setTimezones(listResponse.data.timezones)
     } catch (err: any) {
       const detail = err.response?.data?.detail
@@ -158,10 +147,6 @@ export default function SettingsPage() {
         api.get<CurrencyListResponse>('/settings/currencies?limit=200'),
       ])
       setSelectedCurrency(currencyResponse.data.currency)
-      setCurrencyMetadata({
-        updated_at: currencyResponse.data.updated_at,
-        updated_by_name: currencyResponse.data.updated_by_name ?? null,
-      })
       setCurrencies(listResponse.data.currencies)
     } catch (err: any) {
       const status = err.response?.status
@@ -190,10 +175,6 @@ export default function SettingsPage() {
       const response = await api.put<TimezoneResponse>('/settings/timezone', {
         timezone: selectedTimezone,
       })
-      setTimezoneMetadata({
-        updated_at: response.data.updated_at,
-        updated_by_name: response.data.updated_by_name ?? null,
-      })
       setTimezoneSuccess(
         'Timezone updated successfully. All future records will use the selected timezone.'
       )
@@ -219,10 +200,6 @@ export default function SettingsPage() {
     try {
       const response = await api.put<CurrencyResponse>('/settings/currency', {
         currency: selectedCurrency,
-      })
-      setCurrencyMetadata({
-        updated_at: response.data.updated_at,
-        updated_by_name: response.data.updated_by_name ?? null,
       })
       setCurrencySuccess(
         'Currency updated successfully. Payroll exports and dashboards will use this currency.'
