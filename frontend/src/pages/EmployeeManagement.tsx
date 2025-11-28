@@ -583,7 +583,7 @@ function EditEmployeeModal({ open, employee, onClose, onUpdated }: EditEmployeeM
         name: employee.name,
         email: employee.email,
         pay_rate: employee.pay_rate.toString(),
-        status: employee.status,
+        status: employee.status === 'deleted' ? 'disabled' : employee.status,
       })
       setError('')
       setSubmitting(false)
