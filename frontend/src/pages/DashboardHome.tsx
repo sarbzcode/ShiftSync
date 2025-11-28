@@ -1,12 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import {
-  Users,
-  Calendar,
-  DollarSign,
-  Clock,
-  TrendingUp,
-} from 'lucide-react'
+import { TrendingUp } from 'lucide-react'
 import {
   BarChart,
   Bar,
@@ -22,15 +15,7 @@ import {
   Area,
   Legend,
 } from 'recharts'
-import StatCard from '../components/StatCard'
 import api from '../lib/api'
-
-interface Stats {
-  total_employees: number
-  active_shifts: number
-  pending_payrolls: number
-  currently_clocked_in: number
-}
 
 interface FinancialSnapshot {
   labor_cost: number
@@ -105,7 +90,6 @@ interface Activity {
   user_name: string
 }
 
-const PIE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
@@ -167,13 +151,6 @@ const formatTimestamp = (timestamp: string) => {
 }
 
 export default function DashboardHome() {
-  const navigate = useNavigate()
-  const [stats, setStats] = useState<Stats>({
-    total_employees: 0,
-    active_shifts: 0,
-    pending_payrolls: 0,
-    currently_clocked_in: 0,
-  })
   const [analytics, setAnalytics] = useState<Analytics>(emptyAnalytics)
   const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
@@ -193,8 +170,7 @@ export default function DashboardHome() {
 
   const loadDashboardData = async () => {
     try {
-      const [statsRes, analyticsRes, activityRes, budgetRes] = await Promise.all([
-        api.get('/dashboard/stats'),
+      const [analyticsRes, activityRes, budgetRes] = await Promise.all([
         api.get('/dashboard/analytics'),
         api.get('/dashboard/recent-activity'),
         api
@@ -202,7 +178,6 @@ export default function DashboardHome() {
           .catch(() => ({ data: { budget: undefined } as { budget?: number } })),
       ])
 
-      setStats(statsRes.data)
       const analyticsWithBudget = { ...analyticsRes.data }
 
       // Include payroll taxes in payroll line when present
@@ -236,29 +211,6 @@ export default function DashboardHome() {
       setLoading(false)
     }
   }
-
-  const pendingPayrollAmount = useMemo(() => {
-    return analytics.payments_status.find((status) => status.status === 'Pending')?.amount ?? 0
-  }, [analytics.payments_status])
-
-  const upcomingOpenShifts = useMemo(() => {
-    const now = Date.now()
-    return analytics.coverage_heatmap
-      .filter((cell) => new Date(cell.date).getTime() >= now)
-      .reduce((sum, cell) => sum + cell.open_shifts, 0)
-  }, [analytics.coverage_heatmap])
-
-  const busiestCoverageDay = useMemo(() => {
-    const now = Date.now()
-    return analytics.coverage_heatmap
-      .filter((cell) => new Date(cell.date).getTime() >= now)
-      .sort((a, b) => b.open_shifts - a.open_shifts || b.overtime_hours - a.overtime_hours)[0]
-  }, [analytics.coverage_heatmap])
-
-  const totalExceptions =
-    analytics.exceptions.missed_clock_ins +
-    analytics.exceptions.overtime_pending +
-    analytics.exceptions.shift_followups
 
   if (loading) {
     return (
