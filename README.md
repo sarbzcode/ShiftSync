@@ -40,7 +40,7 @@ copy .env.example .env   # use `cp` on macOS/Linux
 # Edit .env with your MongoDB URI and secrets (see Environment below)
 
 # Seed the initial admin user
-python app/seeds/seed_admin.py
+python app/seed/seed_admin.py
 
 # Run the API
 uvicorn app.main:app --reload --port 8000
@@ -81,11 +81,6 @@ Mobile (`mobile/.env`)
 ## Data Seeding and Fixtures
 Run from `backend` with the virtualenv activated:
 - `python app/seeds/seed_admin.py` - create admin (idempotent).
-- `python app/seeds/seed_fake_employees.py` - sample employees.
-- `python app/seeds/seed_fake_shifts.py` / `seed_office_shifts_2025.py` - demo shifts.
-- `python app/seeds/seed_attendance_from_shifts.py` or `seed_attendance_from_completed_shifts.py` - build attendance from shifts.
-- `python app/seeds/seed_adjustments.py` - sample adjustment types/assignments.
-- Cleanup helpers: `clear_data.py`, `clear_pay.py`, `disable_employees_from_excel.py`.
 
 ## API and Domain Notes
 - Auth: `POST /auth/login` returns JWT; include `Authorization: Bearer <token>`.
@@ -102,14 +97,7 @@ Run from `backend` with the virtualenv activated:
 - APScheduler runs `generate_payroll` every 14 days on API startup; you can also trigger manually via `/payroll/run`.
 - Pay approvals use completed shifts to compute base/overtime pay and apply adjustments (flat/percentage, add/deduct, optional caps, global or per-employee). Pending records can be held, unheld, or bulk approved.
 
-## Testing
-```bash
-cd backend
-.venv\Scripts\activate  # or source .venv/bin/activate
-pytest           # full suite
-pytest -k attendance  # run a subset
-pytest --cov=app tests/  # coverage
-```
+
 
 ## Project Structure
 ```
@@ -118,7 +106,7 @@ backend/
     main.py, config.py, database.py
     routers/ (auth, users, attendance, schedule, pay, payroll, settings, adjustments, dashboard)
     models/, schemas/, services/ (system settings), utils/ (security, scheduler, deps)
-    seeds/ (admin, fake data, attendance/pay helpers)
+    seed/ (admin)
   requirements.txt, Dockerfile
 frontend/
   src/ (pages, components, context, lib)
