@@ -7,7 +7,7 @@ import Work from '../pages/Work'
 import Pay from '../pages/Pay'
 
 export default function AppRoutes() {
-  const { isAuthenticated, isAdmin, isEmployee, loading } = useAuth()
+  const { isAuthenticated, isAdmin, loading } = useAuth()
 
   if (loading) {
     return (
